@@ -1,3 +1,5 @@
+[How to Load Image to Canvas with JavaScript](https://redstapler.co/load-image-to-canvas-javascript/)
+[Canvas with React.js](https://medium.com/@pdx.lucasm/canvas-with-react-js-32e133c05258)
 [Mimstris](https://github.com/mimshwright/mimstris)
 
 # Getting Started with Create React App
