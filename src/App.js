@@ -9,8 +9,10 @@ class App extends React.Component {
     super(props);
     this.state = {
       playerCoordinate: [4, 10],
-      bombCoordinates: [[3, 3], [1, 1], [5, 5], [4, 4]],
-      countdown: 5
+      bombCoordinates: [],
+      countdown: 5,
+      isWinner: false,
+      hitBomb: false
     }
   }
 
@@ -21,8 +23,20 @@ class App extends React.Component {
     }, 1000)
   }
 
+  getBombCoordinates() {
+    let coordArr = [];
+    while(coordArr.length < 12) {
+      let x = Math.floor(Math.random() * 5);
+      let y = Math.floor(Math.random() * 5);
+      if(!coordArr.includes([x, y]) && (x !== 2 && y !== 5)) coordArr.push([x, y]);
+    }
+    console.log(coordArr);
+    this.setState({bombCoordinates: coordArr});
+  }
+
   componentDidMount() {
     document.addEventListener('keydown', (e) => {this.handleKeyPress(e)});
+    this.getBombCoordinates();
     this.startTimer();
   }
 
@@ -33,29 +47,44 @@ class App extends React.Component {
   moveRight() {
     if(this.state.playerCoordinate[0] < 9.9) {
       let newCoordinate = [this.state.playerCoordinate[0] + 1, this.state.playerCoordinate[1]];
-      this.setState({playerCoordinate: newCoordinate});
+      this.setState({playerCoordinate: newCoordinate}, this.checkWin);
     }
   }
 
   moveLeft() {
     if(this.state.playerCoordinate[0] > 0) {
       let newCoordinate = [this.state.playerCoordinate[0] - 1, this.state.playerCoordinate[1]];
-      this.setState({playerCoordinate: newCoordinate});
+      this.setState({playerCoordinate: newCoordinate}, this.checkWin);
     }
   }
 
   moveUp() {
     if(this.state.playerCoordinate[1] > .1) {
       let newCoordinate = [this.state.playerCoordinate[0], this.state.playerCoordinate[1] - 1];
-      this.setState({playerCoordinate: newCoordinate});
+      this.setState({playerCoordinate: newCoordinate}, this.checkWin);
     }
   }
 
   moveDown() {
     if(this.state.playerCoordinate[1] < 10) {
       let newCoordinate = [this.state.playerCoordinate[0], this.state.playerCoordinate[1] + 1];
-      this.setState({playerCoordinate: newCoordinate});
+      this.setState({playerCoordinate: newCoordinate}, this.checkWin);
     }
+  }
+
+  checkWin() {
+    if(this.state.playerCoordinate[1] === 0) {
+      this.setState({isWinner: true});
+    } else {
+      this.checkBomb();
+    }
+  }
+
+  checkBomb() {
+    let noBomb = this.state.bombCoordinates.every(bomb => {
+      return !((this.state.playerCoordinate[1]/2) === bomb[0] && (this.state.playerCoordinate[0]/2) === bomb[1]);
+    });
+    if(!noBomb) this.setState({hitBomb: true});
   }
 
   handleKeyPress(e) {
@@ -76,12 +105,14 @@ class App extends React.Component {
   render() {
     return (
       <>
-        <h2>{this.state.countdown}</h2>
+        {this.state.countdown > 0 && <h2>{this.state.countdown}</h2>}
         {
           this.state.countdown > 0 ?
           <ObstacleBoard bombCoordinates={this.state.bombCoordinates}/> :
-          <GameCanvas  playerCoordinate={this.state.playerCoordinate} />
+          (!this.state.isWinner && !this.state.hitBomb) && <GameCanvas  playerCoordinate={this.state.playerCoordinate} />
         }
+        {this.state.isWinner && <h2>You Win</h2>}
+        {this.state.hitBomb && <h2>You Hit a bomb</h2>}
       </>
     )
   }
