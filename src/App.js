@@ -25,10 +25,10 @@ class App extends React.Component {
 
   getBombCoordinates() {
     let coordArr = [];
-    while(coordArr.length < 10) {
+    while(coordArr.length < 12) {
       let x = Math.floor(Math.random() * 6);
       let y = Math.floor(Math.random() * 6);
-      if(!(coordArr.some(coord => coord[0] === x && coord[1] === y)) && (y !== 2 && x !== 5)) coordArr.push([x, y]);
+      if(!(coordArr.some(coord => coord[0] === x && coord[1] === y)) && !(y === 2 && x === 5)) coordArr.push([x, y]);
     }
     console.log(coordArr);
     this.setState({bombCoordinates: coordArr});
@@ -66,13 +66,6 @@ class App extends React.Component {
     }
   }
 
-  moveDown() {
-    if(this.state.playerCoordinate[1] < 10) {
-      let newCoordinate = [this.state.playerCoordinate[0], this.state.playerCoordinate[1] + 1];
-      this.setState({playerCoordinate: newCoordinate}, this.checkBomb);
-    }
-  }
-
   checkWin() {
     if(this.state.playerCoordinate[1] === 0 && !this.state.hitBomb) {
       this.setState({isWinner: true});
@@ -95,8 +88,6 @@ class App extends React.Component {
       case(keyPressed === 'w' || keyPressed === 'ArrowUp') : this.moveUp();
       break;
       case(keyPressed === 'd' || keyPressed === 'ArrowRight') : this.moveRight();
-      break;
-      case(keyPressed === 's' || keyPressed === 'ArrowDown') : this.moveDown();
       break;
       default: console.log(keyPressed);
     }
