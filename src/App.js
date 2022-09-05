@@ -25,16 +25,17 @@ class App extends React.Component {
 
   getBombCoordinates() {
     let coordArr = [];
-    while(coordArr.length < 12) {
-      let x = Math.floor(Math.random() * 5);
-      let y = Math.floor(Math.random() * 5);
-      if(!coordArr.includes([x, y]) && (x !== 2 && y !== 5)) coordArr.push([x, y]);
+    while(coordArr.length < 10) {
+      let x = Math.floor(Math.random() * 6);
+      let y = Math.floor(Math.random() * 6);
+      if(!(coordArr.some(coord => coord[0] === x && coord[1] === y)) && (y !== 2 && x !== 5)) coordArr.push([x, y]);
     }
     console.log(coordArr);
     this.setState({bombCoordinates: coordArr});
   }
 
   componentDidMount() {
+
     document.addEventListener('keydown', (e) => {this.handleKeyPress(e)});
     this.getBombCoordinates();
     this.startTimer();
