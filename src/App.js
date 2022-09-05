@@ -47,36 +47,34 @@ class App extends React.Component {
   moveRight() {
     if(this.state.playerCoordinate[0] < 9.9) {
       let newCoordinate = [this.state.playerCoordinate[0] + 1, this.state.playerCoordinate[1]];
-      this.setState({playerCoordinate: newCoordinate}, this.checkWin);
+      this.setState({playerCoordinate: newCoordinate}, this.checkBomb);
     }
   }
 
   moveLeft() {
     if(this.state.playerCoordinate[0] > 0) {
       let newCoordinate = [this.state.playerCoordinate[0] - 1, this.state.playerCoordinate[1]];
-      this.setState({playerCoordinate: newCoordinate}, this.checkWin);
+      this.setState({playerCoordinate: newCoordinate}, this.checkBomb);
     }
   }
 
   moveUp() {
     if(this.state.playerCoordinate[1] > .1) {
       let newCoordinate = [this.state.playerCoordinate[0], this.state.playerCoordinate[1] - 1];
-      this.setState({playerCoordinate: newCoordinate}, this.checkWin);
+      this.setState({playerCoordinate: newCoordinate}, this.checkBomb);
     }
   }
 
   moveDown() {
     if(this.state.playerCoordinate[1] < 10) {
       let newCoordinate = [this.state.playerCoordinate[0], this.state.playerCoordinate[1] + 1];
-      this.setState({playerCoordinate: newCoordinate}, this.checkWin);
+      this.setState({playerCoordinate: newCoordinate}, this.checkBomb);
     }
   }
 
   checkWin() {
-    if(this.state.playerCoordinate[1] === 0) {
+    if(this.state.playerCoordinate[1] === 0 && !this.state.hitBomb) {
       this.setState({isWinner: true});
-    } else {
-      this.checkBomb();
     }
   }
 
@@ -85,6 +83,7 @@ class App extends React.Component {
       return !((this.state.playerCoordinate[1]/2) === bomb[0] && (this.state.playerCoordinate[0]/2) === bomb[1]);
     });
     if(!noBomb) this.setState({hitBomb: true});
+    else this.checkWin();
   }
 
   handleKeyPress(e) {
