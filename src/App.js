@@ -3,6 +3,7 @@ import GameCanvas from './components/GameCanvas';
 import './App.css';
 import React from 'react';
 import ObstacleBoard from './components/ObstacleBoard';
+import EndGame from './EndGame';
 
 class App extends React.Component {
   constructor(props) {
@@ -30,7 +31,6 @@ class App extends React.Component {
       let y = Math.floor(Math.random() * 6);
       if(!(coordArr.some(coord => coord[0] === x && coord[1] === y)) && !(y === 2 && x === 5)) coordArr.push([x, y]);
     }
-    console.log(coordArr);
     this.setState({bombCoordinates: coordArr});
   }
 
@@ -39,10 +39,6 @@ class App extends React.Component {
     document.addEventListener('keydown', (e) => {this.handleKeyPress(e)});
     this.getBombCoordinates();
     this.startTimer();
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.onKeyDown);
   }
 
   moveRight() {
@@ -62,6 +58,20 @@ class App extends React.Component {
   moveUp() {
     if(this.state.playerCoordinate[1] > .1) {
       let newCoordinate = [this.state.playerCoordinate[0], this.state.playerCoordinate[1] - 1];
+      this.setState({playerCoordinate: newCoordinate}, this.checkBomb);
+    }
+  }
+
+  moveDiagonalLeft() {
+    if(this.state.playerCoordinate[1] > .1 && this.state.playerCoordinate[0] > 0) {
+      let newCoordinate = [this.state.playerCoordinate[0] - 1, this.state.playerCoordinate[1] - 1];
+      this.setState({playerCoordinate: newCoordinate}, this.checkBomb);
+    }
+  }
+
+  moveDiagonalRight() {
+    if(this.state.playerCoordinate[1] > .1 && this.state.playerCoordinate[0] < 9.9) {
+      let newCoordinate = [this.state.playerCoordinate[0] + 1, this.state.playerCoordinate[1] - 1];
       this.setState({playerCoordinate: newCoordinate}, this.checkBomb);
     }
   }
@@ -89,6 +99,10 @@ class App extends React.Component {
       break;
       case(keyPressed === 'd' || keyPressed === 'ArrowRight') : this.moveRight();
       break;
+      case(keyPressed === 'q') : this.moveDiagonalLeft();
+      break;
+      case(keyPressed === 'e') : this.moveDiagonalRight();
+      break;
       default: console.log(keyPressed);
     }
   }
@@ -102,8 +116,7 @@ class App extends React.Component {
           <ObstacleBoard bombCoordinates={this.state.bombCoordinates}/> :
           (!this.state.isWinner && !this.state.hitBomb) && <GameCanvas  playerCoordinate={this.state.playerCoordinate} />
         }
-        {this.state.isWinner && <h2>You Win</h2>}
-        {this.state.hitBomb && <h2>You Hit a bomb</h2>}
+        {(this.state.isWinner || this.state.hitBomb) && <EndGame isWinner={this.state.isWinner} /> }
       </>
     )
   }
