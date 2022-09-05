@@ -8,9 +8,9 @@ const GameCanvas = props => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
-    const oceanGIF = new Image();
-    oceanGIF.src = '../img/ocean.gif';
-    oceanGIF.onload = () => context.drawImage(oceanGIF, 0, 0, 600, 600);
+    // const oceanGIF = new Image();
+    // oceanGIF.src = '../img/ocean.gif';
+    // oceanGIF.onload = () => context.drawImage(oceanGIF, 0, 0, 600, 600);
     for (let y = 0; y < 6; y++) {
       for (let x = 0; x < 6; x++) {
         context.strokeStyle = 'black';
